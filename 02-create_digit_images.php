@@ -1,12 +1,9 @@
 <?php
 
-ini_set('memory_limit', '2G');
-
-$source_vectors = [];
-foreach (glob(__DIR__ . '/images/sequence/*.png') as $filename) {
+foreach (glob(__DIR__ . '/images/sequence/*.png') as $i => $filename) {
     $src = imagecreatefromstring(file_get_contents($filename));
     for ($d = 0; $d < 16; ++$d) {
-        $pixels = [];
+        $dst = imagecreatetruecolor(15, 28);
         $width = 15;
         $height = 28;
         $margin = 4;
@@ -14,13 +11,12 @@ foreach (glob(__DIR__ . '/images/sequence/*.png') as $filename) {
             for ($w = 0; $w < $width; ++$w) {
                 $x = 8 + $d * ($width + $margin) + $w;
                 $y = 8 + $h;
-                $color = imagecolorat($src, $x, $y);
-                $pixels[] = (int)($color === 0x000000);
+                $color = imagecolorat($src, $x, $y) === 0x000000 ? 0x000000 : 0xffffff;
+                imagesetpixel($dst, $w, $h, $color);
             }
         }
-        $source_vectors[] = $pixels;
+        imagepng($dst, __DIR__ . '/images/digit/' . $i . '-' . $d . '.png');
+        imagedestroy($dst);
     }
     imagedestroy($src);
 }
-
-file_put_contents(__DIR__ . '/vectors/source.json', json_encode($source_vectors));

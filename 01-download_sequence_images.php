@@ -1,6 +1,6 @@
 <?php
 
-for ($t = 0; $t < 1000; ++$t) {
+for ($t = 0; $t < 200; ++$t) {
     $dom = new DOMDocument;
     @$dom->loadHTML(file_get_contents('http://q34.ctf.katsudon.org/'));
     $xpath = new DOMXPath($dom);
